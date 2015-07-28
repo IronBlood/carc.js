@@ -12,3 +12,13 @@ http://www.stats.gov.cn/tjsj/tjbz/xzqhdm/
 2. 抓去需要版本的数据，替换 `rawdata.txt`
 3. 编辑 `base.js`，补充需要的方法
 4. 运行 `./build.sh`，将会生成 `dist/carc.js`
+
+示例
+----
+
+* [使用下拉列表获取行政区域编码](http://ironblood.github.io/carc.js/examples/dropdowns.html)
+
+反馈
+----
+
+请移步 Issues 页面，或者创建 Pull Request。
