@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Dropdowns of Provinces, Cities, and Countries in China</title>
+		<meta charset="utf-8">
+		<script type="text/javascript" src="../dist/carc.js"></script>
+		<script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+		<style>
+		.hidden { display: none; }
+		</style>
+	</head>
+
+	<body>
+		<div id="d-p">
+			请选择省 <select id="s-p"></select>
+		</div>
+
+		<div id="d-c" class="hidden">
+			请选择市 <select id="s-c"></select>
+		</div>
+
+		<div id="d-cc" class="hidden">
+			请选择地区 <select id="s-cc"></select>
+		</div>
+
+		<div id="result"></div>
+		<button id="getCode">获取代码</button>
+
+		<script type="text/javascript">
+
+			function insert_select(selector, nameArray, IDArray) {
+				if(nameArray.length == 0)
+					return ;
+
+				var html_str="<option value=\"0\">请选择</option>";
+				for(var i=0, length=nameArray.length; i<length; i++) {
+					html_str += "<option value=\"" + IDArray[i] + "\">"
+						+ nameArray[i] + "</option>";
+				}
+
+				$(selector).html(html_str);
+			}
+
+			$(document).ready(function() {
+				// 初始化 province
+				var provinceArray = Carc.getProvinces(),
+					provinceIDArray = Carc.getProvinceIDs(),
+					provinceLength = provinceArray.length;
+
+				insert_select("select#s-p", provinceArray, provinceIDArray);
+
+				$('select#s-p').change(function() {
+					$('div#d-c').addClass('hidden');
+					$('div#d-cc').addClass('hidden');
+					$('#result').text();
+
+					var p_id = $('select#s-p').val();
+
+					if(p_id<0)	// 请选择
+						return ;
+
+					if(p_id>70)	// 台湾、香港、澳门
+						return ;
+
+					var cityArray = Carc.getCities(p_id),
+						cityIDArray = Carc.getCityIDs(p_id);
+
+					insert_select("select#s-c", cityArray, cityIDArray);
+					$('div#d-c').removeClass('hidden');
+				});
+
+				$('select#s-c').change(function() {
+					$('div#d-cc').addClass('hidden');
+					$('#result').text();
+
+					var p_id = $('select#s-p').val(),
+						c_id = $('select#s-c').val();
+
+					var countryArray = Carc.getCountries(p_id, c_id),
+						countryCodes = Carc.getCountryCodes(p_id, c_id);
+
+					insert_select("select#s-cc", countryArray, countryCodes);
+
+					$('div#d-cc').removeClass('hidden');
+				});
+
+				$('#getCode').click(function() {
+					if($('div#d-c').hasClass('hidden')) {
+						// 请选择或者港澳台地区
+						$('#result').text($('select#s-p').val() + "0000");
+					} else if(!($('div#d-cc').hasClass('hidden')) && $('select#s-cc').val()!="0") {
+						// 县区，直接输出
+						$('#result').text($('select#s-cc').val());
+					} else {
+						$('#result').text($('select#s-c').val() + "00");
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
