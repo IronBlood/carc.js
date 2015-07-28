@@ -29,13 +29,26 @@ var Carc = {
 
 	getCityIDs: function(province_id) {
 		return this.data.Province[province_id].c_ids;
-	}
+	},
 
 	getCountries: function(province_id, city_id) {
 		return this.data.Province[province_id].City[city_id].Countries;
-	}
+	},
 
 	getCountryCodes: function(province_id, city_id) {
 		return this.data.Province[province_id].City[city_id].e_ids;
 	},
+
+	getCode: function(province_id, city_id, country_index) {
+		if(typeof(this.data.Province[province_id]) == "undefined")
+			return "";
+
+		if(this.data.Province[province_id].Cities.length < 1)
+			return this.data.Province[province_id].Code;
+
+		if(typeof(this.data.Province[province_id].City[city_id]) == "undefined")
+			return "";
+
+		return this.data.Province[province_id].City[city_id].e_ids[country_index];
+	}
 };
